@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1010036473171",
+    "project_id": "society-ceb7a",
+    "storage_bucket": "society-ceb7a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1010036473171:android:97bfb6d42c05207914b5a6",
+        "android_client_info": {
+          "package_name": "com.dignizant.society"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1010036473171-3t8gdsa15i5i9au8anfikqgmnrqbp1j1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBL07MBZ3XXtWQ9PlxNga22lKO4R4j6Ovw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1010036473171-3t8gdsa15i5i9au8anfikqgmnrqbp1j1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
