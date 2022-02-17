@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:otp_autofill/otp_autofill.dart';
+import 'package:society/screen/dashboard_screen.dart';
 import 'package:society/screen/home_screen.dart';
 import 'package:society/screen/number_verify.dart';
 import 'package:society/screen/otp_screen.dart';
@@ -31,18 +32,21 @@ class LoginDashboard extends ChangeNotifier {
       ),
     );
   }
- 
-    void verifyOTP (BuildContext context) async{
-    final credential = PhoneAuthProvider.credential(verificationId: verificationIdReceived, smsCode: otpController.text);
-    
-    try{
-      await FirebaseAuth.instance.signInWithCredential(credential);
+
+  void verifyOTP(BuildContext context) async {
+    // final credential = PhoneAuthProvider.credential(
+    //     verificationId: verificationIdReceived, smsCode: otpController.text);
+    AuthCredential phoneCredential = PhoneAuthProvider.credential(
+           verificationId: verificationIdReceived, smsCode: otpController.text);
+
+    try {
+      await FirebaseAuth.instance.signInWithCredential(phoneCredential);
       if(FirebaseAuth.instance.currentUser != null){
         uid = FirebaseAuth.instance.currentUser!.uid;
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const HomePage(),
+            builder: (context) => const DashboardScreen(),
           ),
         );
       }
@@ -58,33 +62,26 @@ class LoginDashboard extends ChangeNotifier {
     await _auth.verifyPhoneNumber(
       phoneNumber: number,
       timeout: const Duration(seconds: 60),
-
-
-      verificationCompleted: (PhoneAuthCredential credential){
-          _auth.signInWithCredential(credential);
-          if(_auth.currentUser != null){
-            uid = _auth.currentUser!.uid;
-          }
-          else{
-            print('failed to sign in ');
-          }
-          notifyListeners();
-        },
-
+      verificationCompleted: (PhoneAuthCredential credential) {
+        _auth.signInWithCredential(credential);
+        if (_auth.currentUser != null) {
+          uid = _auth.currentUser!.uid;
+        } else {
+          print('failed to sign in ');
+        }
+        notifyListeners();
+      },
       verificationFailed: (FirebaseAuthException exception) {
         print(exception.message);
       },
-
       codeSent: (String verificationId, [int? resendToken]) async {
-
-         verificationIdReceived = verificationId;
-         otpSent = true;
-         notifyListeners();
-        },
-
+        verificationIdReceived = verificationId;
+        otpSent = true;
+        notifyListeners();
+      },
       codeAutoRetrievalTimeout: (String verificationId) {
         verificationIdReceived = verificationId;
-        otpSent = true ;
+        otpSent = true;
         print('verificationId = $verificationId');
         print("Timout");
         notifyListeners();
@@ -92,26 +89,27 @@ class LoginDashboard extends ChangeNotifier {
     );
   }
 
-  Future? readOTP (){
+  Future? readOTP() {
     otpInteractor = OTPInteractor();
     otpInteractor
         .getAppSignature()
         .then((value) => print('signature - $value'));
-    otpController =  OTPTextEditController(
-        codeLength: 6,
+    otpController = OTPTextEditController(
+      codeLength: 6,
       onCodeReceive: (code) => print('Your Application receive code - $code'),
       otpInteractor: otpInteractor,
     )..startListenUserConsent(
-        (code){
+        (code) {
           final exp = RegExp(r'(\d{5})');
           return exp.stringMatch(code ?? '') ?? '';
         },
-      /*  strategies: [
+        /*  strategies: [
           SampleStrategy(),
         ]*/
-    );
+      );
   }
-  Future dispose ()async{
+
+  Future dispose() async {
     await otpController.stopListen();
   }
 }
@@ -120,7 +118,8 @@ class SampleStrategy extends OTPStrategy {
   @override
   Future<String> listenForCode() {
     return Future.delayed(
-       const Duration(seconds: 5),()=> 'Your code is 54321',
+      const Duration(seconds: 5),
+      () => 'Your code is 54321',
     );
   }
 }
